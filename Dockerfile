@@ -1,4 +1,4 @@
-FROM ubuntu:latest
+FROM ubuntu:focal
 WORKDIR /tmp
 RUN apt update && apt install -y wget
 RUN wget https://fastdl.mongodb.org/tools/mongosync/mongosync-ubuntu2004-x86_64-1.7.1.tgz && \

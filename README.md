@@ -37,23 +37,16 @@ Create new namespace
 kubectl create namespace infra-mongosync
 ```
 
-Prepare connection strings to both source and destination MongoDB databases. For example:
+Update `cluster0` and `cluster1` fields in `./manifests/mongosync-cm.yml` file and apply it.
 
 ```bash
-export MONGOSYNC_CLUSTER_0=mongodb://mongosync-user:<strong-password>@mongos.mongodb.svc.cluster.local:27017
-export MONGOSYNC_CLUSTER_1=mongodb://mongosync-user:<strong-password>@192.168.32.64:27017
+kubectl apply -f ./manifests/mongosync-cm.yml
 ```
 
-Store those strings as `mongosync-secret` as follows
+Next, deploy `mongosync` pod.
 
 ```bash
-kubectl -n infra-mongosync create secret generic mongosync-secrets --from-literal="MONGOSYNC_CLUSTER_0=${MONGOSYNC_CLUSTER_0}" --from-literal="MONGOSYNC_CLUSTER_1=${MONGOSYNC_CLUSTER_1}"
-```
-
-Deploy `mongosync` pod.
-
-```bash
-kubectl apply -f ./mongosync.yml
+kubectl apply -f ./manifests/mongosync-deployment.yml
 ```
 
 Expose port to `mongosync`

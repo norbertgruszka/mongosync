@@ -1,0 +1,77 @@
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: mongosync
+  name: mongosync
+  namespace: infra-mongosync
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: mongosync
+  template:
+    metadata:
+      labels:
+        app: mongosync
+    spec:
+      volumes:
+        - name: mongosync-secrets
+          secret:
+            secretName: mongosync-secrets
+      containers:
+      - image: norbertgruszka1234/mongosync:v0.1.0
+        name: mongosync
+        command: ["--config", "/etc/mongosync.conf"]
+        ports:
+        - containerPort: 27182
+          name: api
+        livenessProbe:
+          httpGet:
+            path: /api/v1/progress
+            port: api
+          periodSeconds: 10
+          timeoutSeconds: 5
+          successThreshold: 1
+          failureThreshold: 3
+        readinessProbe:
+          httpGet:
+            path: /api/v1/progress
+            port: api
+          periodSeconds: 10
+          timeoutSeconds: 5
+          successThreshold: 1
+          failureThreshold: 3
+        env:
+        - name: MONGOSYNC_CLUSTER_0
+          valueFrom:
+            secretKeyRef:
+              name: mongosync-secrets
+              key: MONGOSYNC_CLUSTER_0
+        - name: MONGOSYNC_CLUSTER_1
+          valueFrom:
+            secretKeyRef:
+              name: mongosync-secrets
+              key: MONGOSYNC_CLUSTER_1
+        volumeMounts:
+          - name: mongosync-secrets
+            readOnly: true
+            mountPath: "/etc/"
+---
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    app: mongosync
+  name: mongosync
+  namespace: infra-mongosync
+spec:
+  selector:
+    app: mongosync
+  type: ClusterIP
+  ports:
+  - name: api
+    port: 27182
+    protocol: TCP
+    targetPort: api

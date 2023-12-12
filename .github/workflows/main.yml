@@ -15,7 +15,7 @@ on:
 
 env:
   REGISTRY: docker.io
-  IMAGE_NAME: norbertgruszka1234/debug-ubuntu
+  IMAGE_NAME: norbertgruszka1234/mongosync
 
 
 jobs:

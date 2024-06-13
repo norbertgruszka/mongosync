@@ -8,6 +8,6 @@ stringData:
   # for more options.
   mongosync.yml: |
     cluster0: "mongodb://mongosync-user:<strong-password>@mongos.mongodb.svc.cluster.local:27017"
-    cluster1: "mongodb://mongosync-user:<strong-password>@192.168.32.64:27017"
+    cluster1: "mongodb://mongosync-user:<strong-password>@127.0.0.1:27017"
     logPath: "/var/log/mongosync"
     verbosity: "WARN"
